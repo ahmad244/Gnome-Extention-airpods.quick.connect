@@ -1,0 +1,8 @@
+{
+  "name": "Airpods Quick Connect",
+  "description": "Quickly connect to your Airpods with one click",
+  "uuid": "airpods.quick.connect@ahmad244.com",
+  "shell-version": [
+    "42"
+  ]
+}
