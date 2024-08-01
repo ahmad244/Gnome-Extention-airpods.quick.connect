@@ -18,7 +18,7 @@ Ensure you have `bluetoothctl` installed on your system. This is typically inclu
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/your-username/airpods-quick-connect.git
+   git clone https://github.com/ahmad244/Gnome-Extention-airpods.quick.connect
    ```
 
 2. **Navigate to the extension directory:**
@@ -104,6 +104,6 @@ This extension was inspired by the need for a simple and quick way to connect Ai
 
 ## Author
 
-Ahmad244
+Ahmad Al-Buthom
 
 Feel free to reach out for any questions or suggestions.
