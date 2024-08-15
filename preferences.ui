@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkBox" id="preferences-box">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkLabel">
+        <property name="label">Select AirPods:</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkComboBoxText" id="devices-combobox">
+      </object>
+    </child>
+  </object>
+</interface>

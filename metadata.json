@@ -1,8 +1,8 @@
 {
-  "name": "Airpods Quick Connect",
-  "description": "Quickly connect to your Airpods with one click",
   "uuid": "airpods.quick.connect@ahmad244.com",
-  "shell-version": [
-    "42"
-  ]
+  "name": "AirPods Quick Connect",
+  "description": "Quickly connect to AirPods Pro 2.",
+  "version": 1,
+  "shell-version": ["3.36", "3.38", "40", "41", "42"],
+  "settings-schema": "org.gnome.shell.extensions.my-shiny-indicator"
 }

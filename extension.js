@@ -1,4 +1,4 @@
-const { St, GLib, Gio, GObject } = imports.gi;
+const { St, Gio, GObject, GLib } = imports.gi;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
@@ -11,15 +11,49 @@ class Indicator extends PanelMenu.Button {
         super._init(0.0, _('My Shiny Indicator'));
 
         this.add_child(new St.Icon({
-            icon_name: 'face-smile-symbolic',
+            icon_name: 'bluetooth-active-symbolic',
             style_class: 'system-status-icon',
         }));
+
+        let restartBlthAndconnectAirpodsItem = new PopupMenu.PopupMenuItem(_('Force Connect to AirPods Pro 2'));
+        restartBlthAndconnectAirpodsItem.connect('activate', () => {
+            this._restartBluetoothAndConnect();
+        });
+        this.menu.addMenuItem(restartBlthAndconnectAirpodsItem);
+
 
         let connectAirpodsItem = new PopupMenu.PopupMenuItem(_('Connect to AirPods Pro 2'));
         connectAirpodsItem.connect('activate', () => {
             this._connectToAirpodsPro2();
         });
         this.menu.addMenuItem(connectAirpodsItem);
+
+
+    }
+
+    _restartBluetoothAndConnect() {
+        // Restart the Bluetooth service
+        let restartCmd = 'sudo /bin/systemctl restart bluetooth';
+        let restartProc = new Gio.Subprocess({
+            argv: ['sh', '-c', restartCmd],
+            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+        });
+
+        restartProc.init(null);
+
+        restartProc.communicate_utf8_async(null, null, (proc, res) => {
+            let [, stdout, stderr] = proc.communicate_utf8_finish(res);
+
+            if (proc.get_successful()) {
+                // Add a delay to ensure Bluetooth service is fully restarted
+                GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
+                    this._connectToAirpodsPro2();
+                    return GLib.SOURCE_REMOVE;
+                });
+            } else {
+                Main.notify(_('Failed to restart Bluetooth service: ') + stderr.trim());
+            }
+        });
     }
 
     _connectToAirpodsPro2() {
