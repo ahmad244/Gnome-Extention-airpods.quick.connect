@@ -32,29 +32,52 @@ class Indicator extends PanelMenu.Button {
     }
 
     _restartBluetoothAndConnect() {
-        // Restart the Bluetooth service
-        let restartCmd = 'sudo /bin/systemctl restart bluetooth';
-        let restartProc = new Gio.Subprocess({
-            argv: ['sh', '-c', restartCmd],
+        // Turn Bluetooth off
+        let powerOffCmd = 'bluetoothctl power off';
+        let powerOffProc = new Gio.Subprocess({
+            argv: ['sh', '-c', powerOffCmd],
             flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
         });
-
-        restartProc.init(null);
-
-        restartProc.communicate_utf8_async(null, null, (proc, res) => {
+    
+        powerOffProc.init(null);
+    
+        powerOffProc.communicate_utf8_async(null, null, (proc, res) => {
             let [, stdout, stderr] = proc.communicate_utf8_finish(res);
-
+    
             if (proc.get_successful()) {
-                // Add a delay to ensure Bluetooth service is fully restarted
-                GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
-                    this._connectToAirpodsPro2();
+                // Add a delay to ensure Bluetooth is fully powered off
+                GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, .5, () => {
+                    // Turn Bluetooth back on
+                    let powerOnCmd = 'bluetoothctl power on';
+                    let powerOnProc = new Gio.Subprocess({
+                        argv: ['sh', '-c', powerOnCmd],
+                        flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+                    });
+    
+                    powerOnProc.init(null);
+    
+                    powerOnProc.communicate_utf8_async(null, null, (proc, res) => {
+                        let [, stdout, stderr] = proc.communicate_utf8_finish(res);
+    
+                        if (proc.get_successful()) {
+                            // Add a delay to ensure Bluetooth is fully powered on
+                            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, .5, () => {
+                                this._connectToAirpodsPro2();
+                                return GLib.SOURCE_REMOVE;
+                            });
+                        } else {
+                            Main.notify(_('Failed to power on Bluetooth: ') + stderr.trim());
+                        }
+                    });
+    
                     return GLib.SOURCE_REMOVE;
                 });
             } else {
-                Main.notify(_('Failed to restart Bluetooth service: ') + stderr.trim());
+                Main.notify(_('Failed to power off Bluetooth: ') + stderr.trim());
             }
         });
     }
+    
 
     _connectToAirpodsPro2() {
         let macAddress = "18:3F:70:70:78:CA"; 
