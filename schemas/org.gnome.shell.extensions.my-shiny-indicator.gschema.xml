@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+    <schema id="org.gnome.shell.extensions.my-shiny-indicator" path="/org/gnome/shell/extensions/my-shiny-indicator/">        
+        <key name="device-mac-address" type="s">
+            <default>'00:00:00:00:00:00'</default>
+            <summary>MAC Address of the AirPods Pro 2 device.</summary>
+            <description>The MAC address of the AirPods Pro 2 device to connect to.</description>
+        </key>
+
+        <key name="bluetooth-device-list" type="as">
+            <default>[]</default>
+            <summary>List of available Bluetooth devices.</summary>
+            <description>A list of MAC addresses for available Bluetooth devices.</description>
+        </key>
+
+    </schema>
+</schemalist>
